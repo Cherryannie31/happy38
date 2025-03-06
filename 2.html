@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HappyWomen'sDays</title>
+    <link rel="icon" type="image/png"  href="/Mailbox.png">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to bottom, #FFEDFA, #BE5985);
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        .container {
+            text-align: center;
+        }
+
+                /* 新增背景样式 */
+                .background-effect {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+
+        .sakura {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            animation: fall linear infinite;
+            opacity: 0.8;
+            filter: drop-shadow(0 0 2px #ff99cc);
+        }
+
+        /* 新增动画 */
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes fall {
+            100% { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        h1 {
+            color: #d6336c;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        h2 {
+            color: #ad1457;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        #heartCanvas {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            cursor: pointer;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .heart {
+            animation: float 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="background-effect" id="background"></div>
+        <h1>三·八妇女节快乐</h1>
+        <h2>致敬每一位了不起的她</h2>
+        <canvas id="heartCanvas" class="heart"></canvas>
+    </div>
+
+    <script>
+        // ========== 新增背景特效 ==========
+        function createBackground() {
+            const container = document.getElementById('background');
+            
+            // 创建星空
+            for(let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.cssText = `
+                    width: ${Math.random() * 3}px;
+                    height: ${Math.random() * 3}px;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    animation-delay: ${Math.random() * 2}s;
+                `;
+                container.appendChild(star);
+            }
+
+            // 创建樱花
+            setInterval(() => {
+                const sakura = document.createElement('img');
+                sakura.className = 'sakura';
+                sakura.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjZmY5OWNjIiBkPSJNMTIgMEM4LjY4NiAwIDYgMy4zNTIgNiA3LjQ3NmMwIDQuNjIxIDQuMjI5IDkuNzEzIDYgMTQuNDg5IDEuMzcxLTQuNzc2IDYtNS40NCA2LTE0LjQ4OSAwLTQuMTI0LTIuNjg2LTcuNDc2LTYtNy40NzZ6Ii8+PC9zdmc+';
+                sakura.style.cssText = `
+                    left: ${Math.random() * 100}%;
+                    animation-duration: ${Math.random() * 8 + 6}s;
+                    transform: rotate(${Math.random() * 360}deg);
+                `;
+                container.appendChild(sakura);
+                setTimeout(() => sakura.remove(), 10000);
+            }, 1500);
+        }
+
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+        const particles = [];
+        const colors = ['#ff6b81', '#ff4757', '#ff6348', '#ffa502', '#ff7f50'];
+
+        function resizeCanvas() {
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientWidth * 0.8;
+            drawHeart();
+        }
+
+        function drawHeart() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, canvas.height / 2 + 50);
+            ctx.bezierCurveTo(canvas.width / 2 + 100, canvas.height / 2 - 50, canvas.width / 2 + 50, canvas.height / 2 - 150, canvas.width / 2, canvas.height / 2 - 50);
+            ctx.bezierCurveTo(canvas.width / 2 - 50, canvas.height / 2 - 150, canvas.width / 2 - 100, canvas.height / 2 - 50, canvas.width / 2, canvas.height / 2 + 50);
+            ctx.closePath();
+            ctx.fillStyle = '#ff6b81';
+            ctx.fill();
+            ctx.strokeStyle = '#ad1457';
+            ctx.lineWidth = 5;
+            ctx.stroke();
+        }
+
+        function createParticles(x, y) {
+            for (let i = 0; i < 30; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    size: Math.random() * 5 + 2,
+                    speedX: (Math.random() - 0.5) * 4,
+                    speedY: (Math.random() - 0.5) * 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    life: 100
+                });
+            }
+        }
+
+        function updateParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.speedX;
+                p.y += p.speedY;
+                p.life--;
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+        }
+
+        function drawParticles() {
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawHeart();
+            updateParticles();
+            drawParticles();
+            requestAnimationFrame(animate);
+        }
+
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            createParticles(x, y);
+        });
+
+        window.addEventListener('resize', resizeCanvas);
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            createParticles(x, y);
+        });
+
+        createBackground();
+        resizeCanvas();
+        animate();
+    </script>
+</body>
+</html>
